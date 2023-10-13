@@ -1,0 +1,77 @@
+body {
+  background-color: #222323;
+	font: 15px cursive;
+	color:white;
+	padding-inline: 10px;
+}
+.column {
+  float: left;
+  width: 50% ;
+  background-color: #222323;
+  color: white;
+  text-indent: 10px;
+  min-height: 225px;
+  font: 15px cursive;
+}
+.row {
+  width: 100%;
+  display: table;
+  clear: both;
+  background-color: #222323;
+  font: 15px cursive;
+  color:white;
+  padding-inline: 10px;
+}
+a:link.normalLink, a:visited.normalLink {
+  background-color: #087908;
+  color: white;
+  padding: 15px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+ul.navBar {
+  top: 0;
+  left: 0;
+  width: 100%;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+.navBar li {
+  list-style-type: none;
+  float: left;
+}
+.navBar li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+.navBar li a:hover:not(.active) {
+  background-color: #111;
+}
+.navBar .active {
+  background-color: #087908;
+}
+.messageBox {
+  height: 75px;
+  width: 300px;
+}
+.email_error {
+  display: none;
+  color: red;
+}
+.phone_error {
+  display: none;
+  color: red;
+}
+.success {
+  display: none;
+  color: green;
+}
