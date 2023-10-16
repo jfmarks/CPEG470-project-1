@@ -12,7 +12,7 @@
     <script defer src="/__/firebase/10.4.0/firebase-database-compat.js"></script>
     <script defer src="/__/firebase/init.js?useEmulator=true"></script>
     <script defer type="module" src="/config.js"></script>
-    <script defer type="module" src="/start.js"></script>
+    <script defer type="module" src="/create.js"></script>
     <!-- 
       initialize the SDK after all desired features are loaded, set useEmulator to false
       to avoid connecting the SDK to running emulators.
@@ -21,16 +21,28 @@
   </head>
   <body>
     <ul class="navBar"> 
-      <li><a class="active" href="/index.html">you are here</a></li>
+      <li><a href="/index.html">you are here</a></li>
       <li><a href="/signup.html">Sign up here</a></li>
-      <li><a href="/create.html">Create a tournament here</a></li>
+      <li><a class="active" href="/create.html">Create a tournament here</a></li>
       <li><a href="https://www.youtube.com/watch?v=KaqC5FnvAEc&ab">another page</a></li>
     </ul>
     <div id="login">
-      <h1 id="welcome">Welcome</h1>
+        <h1 id="welcome">Welcome</h1>
+        <h2>Create a tournament here!</h2>
     </div>
-    <div id="gameContainer"></div>
-
+    <form id="createForm">
+        <div class="form-group">
+            <label for="tournament_name">Tournament Name:</label>
+            <input id="tournament_name" type="text" class="form-control" required>
+        </div>
+        <input type="submit" id="go" class="button" value="Submit">
+        <div class="success" id="signUp">Here is the link for people to sign up for your tournament: </div>
+        <div class="success" id="view">To view the tournament, follow this link</div>
+        <br>
+        <div>
+          To start your tournament, enter the name and click the button below.
+            <button id="start tournament">Lock entry and start your tournament!</button>
+        </div>
+    </form>
   </body>
-  
 </html>
