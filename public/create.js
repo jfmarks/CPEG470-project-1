@@ -10,10 +10,49 @@ import {
 import { db } from "/config.js";
 
 function startRound(tournamentName) {
-    //find out what round is starting
-    //if it is the first round, start based on the player list of the tournament.
-    //if it is a subsequent round, add all the players that have 3 points to the next round
-    //just copy the JSON objects from the previous round and set points to 0?
+  console.log(tournamentName);
+  var tournamentRef = ref(db, "Tournaments/"+tournamentName);
+        get(tournamentRef)
+          .then((snapshot) => {
+            if (snapshot.exists()) {
+              const data = snapshot.val();
+              console.log(data);
+              const keys = Object.keys(data["rounds"]);
+              console.log(keys);
+              const nextRoundNum = keys.length;
+              if (nextRoundNum === 1 ) {
+                const nextRoundPlayers = data["player_list"];
+                console.log(nextRoundPlayers);
+                const nextRound = {
+                  player_list: nextRoundPlayers,
+                  complete: false
+                }
+                console.log(nextRound);
+                set(ref(db, "Tournaments/"+tournamentName+"/rounds/round"+nextRoundNum.toString()),nextRound);
+              } else {
+                var num_players = 1;
+                var nextRoundPlayers = {};
+                for (var i = 1; i <= Object.keys(data["rounds"]["round"+(nextRoundNum-1).toString()]["player_list"]).length; i++) {
+                  if (data["rounds"]["round"+(nextRoundNum-1).toString()]["player_list"]["player "+(i.toString())]["points"] === 3) {
+                    nextRoundPlayers["player "+num_players.toString()] = data["rounds"]["round"+(nextRoundNum-1).toString()]["player_list"]["player "+(i.toString())];
+                    nextRoundPlayers["player "+num_players.toString()]["points"] = 0;
+                    num_players++;
+                  }
+                }
+                console.log(nextRoundPlayers);
+                const nextRound = {
+                  player_list: nextRoundPlayers,
+                  complete: false
+                }
+                set(ref(db, "Tournaments/"+tournamentName+"/rounds/round"+nextRoundNum.toString()),nextRound);
+              }
+            } else {
+              console.log("No data found at the specified location.");
+            }
+          })
+          .catch((error) => {
+            console.error("Error reading data:", error);
+          });
 }
 
 // even listener for creating a tournament
@@ -28,8 +67,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const newTournament = {
           complete: false,
           ownerID: user.uid,
-          player_list: { PLAYER0: { name: "", realName: "", uid: "" } },
-          rounds: {},
+          player_list: { PLAYER0: { name: "", realName: "", uid: "", points: 0 } },
+          rounds: {ROUND0: "temp round"},
           started: false,
         };
         var tournamentRef = ref(db, "Tournaments");
@@ -63,18 +102,19 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
     //show the link
-    const newLink = document.createAttribute("a");
-    newLink.href = "https://tournamentwebapp.web.app/index.html?tournament="+tournament_name;
-    document.querySelector("#view").appendChild(newLink);
-    newLink.href = "https://tournamentwebapp.web.app/signup.html?tournament="+tournament_name;
-    document.querySelector("#signUp").appendChild(newLink);
-    document.getElementById(".success").style.display = "block";
+    const newLink = "https://tournamentwebapp.web.app/index.html?tournament="+tournament_name;
+    document.querySelector("#view").href = newLink;
+    document.querySelector("#view").textContent = newLink;
+    const newLink2 = "https://tournamentwebapp.web.app/signup.html?tournament="+tournament_name;
+    document.querySelector("#signUp").href = newLink2;
+    document.querySelector("#signUp").textContent = newLink2;
+    alert("Thank you for creating a tournament.");
   });
 });
 
 // the event listener for starting a tournament
 document.addEventListener("DOMContentLoaded", function () {
-  document.querySelector("form").addEventListener("submit", function (event) {
+  document.querySelector("#startTournamentButton").addEventListener("click", function (event) {
     event.preventDefault(); // Prevent the default form submission behavior
 
     var tournament_name = document.querySelector("#tournament_name").value;
@@ -87,12 +127,10 @@ document.addEventListener("DOMContentLoaded", function () {
             if (snapshot.exists()) {
               const data = snapshot.val();
               console.log(data);
-              if (user.uid === tournamentRef["owner"]) {
+              if (user.uid === data["ownerID"]) {
                 // START TOURNAMENT COMMAND
-                set(
-                  ref(db, "Tournaments/" + tournament_name + "/started"),
-                  true
-                );
+                startRound(tournament_name);
+                set(ref(db, "Tournaments/" + tournament_name + "/started"),true);
               }
             } else {
               console.log("No data found at the specified location.");
@@ -153,3 +191,5 @@ firebase.auth().onAuthStateChanged((user) => {
     renderLogin();
   }
 });
+
+//export {startRound}

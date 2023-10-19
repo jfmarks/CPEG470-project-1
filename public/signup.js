@@ -94,6 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
                   Name: user_name,
                   realName: user.displayName,
                   uid: user.uid,
+                  points: 0
                 }
               );
               remove(
